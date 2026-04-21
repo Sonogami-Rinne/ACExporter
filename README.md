@@ -1,6 +1,6 @@
 # ACExporter
 
-A BepInEx plugin for Summer Vacation Scramble to export characters to PMX.
+A BepInEx plugin for Aicomi to export characters to PMX.
 
 ## How to use
 The usage is similar to [this](https://github.com/Sonogami-Rinne/SVS_CharacterExporter/blob/master/README.md)
