@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="BepInEx.KeyboardShortcut.IL2CPP" Version="18.4.1">
+		  <IncludeAssets>compile</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	  <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.725">
+		  <IncludeAssets>compile</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	  <PackageReference Include="IllusionLibs.Aicomi.GameAssembly" Version="2024.10.3" />
+	  <PackageReference Include="IllusionLibs.Aicomi.Il2CppSystem" Version="2024.10.3" />
+	  <PackageReference Include="IllusionLibs.Aicomi.UnityEngine" Version="2022.3.55.1" />
+  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\meshexporter.unity3d" />
+	</ItemGroup>
+</Project>
