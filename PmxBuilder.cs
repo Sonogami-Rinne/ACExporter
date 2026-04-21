@@ -23,7 +23,7 @@ internal class PmxBuilder
 		"cf_m_eyeline_kage", "cf_m_eyeline_down", "cf_m_sirome_00", "cf_m_hitomi_00", "cf_m_tang", "cf_m_namida_00", "cf_m_gageye_00", "cf_m_gageye_01", "cf_m_gageye_02",
 		"cf_O_face_atari_M", "Highlight_cm_O_face_rend", "cm_m_body", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_shadowcaster", "o_body", "cf_O_face", "cf_O_tooth",
 		"cf_O_canine", "cf_O_mayuge", "cf_O_noseline", "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S", "cf_Ohitomi_L", "cf_Ohitomi_R",
-		"cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "o_tang", "cf_O_face_atari", "o_tango", "o_nail_def01", "o_nail_foot"
+		"cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "o_tang", "cf_O_face_atari", "o_tango", "o_nail_def01", "o_nail_foot", "cf_m_body_00", "cf_m_head_00"
     };
 
 	public string EyeMatName = "cf_m_hitomi_00";
@@ -350,7 +350,8 @@ internal class PmxBuilder
         }
 
         string[] ignoredSMRs = { "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_Mask" };
-		string[] multiTexShaders = { "LIF/lif_main_skin_head", "LIF/lif_main_skin_body" };
+		string[] multiTexShaders = { "AC/skin_head", "AC/skin_body" };
+		string[] ignoredShaders = { "AC/hair_outline", "AC/sub/shadowcast" };
 		GameObject light = Light.FindObjectsOfType<Light>()[0].gameObject;
 		Camera camera;
 		if (this.exportWithMainCamera)
@@ -438,6 +439,10 @@ internal class PmxBuilder
 				int submeshIndex = Math.Min(j, subMeshCount);
                 if (meshRenders[i].sharedMaterials[j] == null || ignoredShaders.Contains(meshRenders[i].sharedMaterials[j].shader.name)) continue;
                 Material material = new Material(meshRenders[i].sharedMaterials[j]);
+				if (ignoredShaders.Contains(material.shader.name))
+				{
+					continue;
+				}
 
                 string matName = smrMaterialsCache[GetGameObjectPath(smr.gameObject)][j];
 
@@ -569,14 +574,22 @@ internal class PmxBuilder
 
                     lightColor = render(lightRotation, lightPosition, 0, square, baseLength, baseLength, image, camera);
                     darkColor = render(darkRotation, darkPosition, 0, square, baseLength, baseLength, image, camera);
-
-					if (isMultiTexShaders)
+					if (this.exportWithMainCamera)
+					{
+                        auxiliaryCamera.orthographicSize = 0.5f;
+                        auxiliaryCamera.aspect = 1f;
+                        auxiliaryCamera.transform.position = new UnityEngine.Vector3(0.5f, 0.5f, 1f);
+                        auxiliaryCamera.transform.LookAt(new UnityEngine.Vector3(0.5f, 0.5f, 0f));
+						auxiliaryCamera.transform.hasChanged = true;
+						Color32[] alphaOverlay = render(lightRotation, lightPosition, 0, square, baseLength, baseLength, image, auxiliaryCamera);
+						lightColor = addAlpha(lightColor, alphaOverlay);
+						darkColor = addAlpha(darkColor, alphaOverlay);
+                    }
+                    if (isMultiTexShaders)
 					{
                         blend(lightColor, lightOverlay);
 						blend(darkColor, darkOverlay);
 					}
-					
-
                     TextureSaver.SaveTexture(lightColor, baseLength, baseLength, currentSavePath + "/pre_light/" + matName + "_light.png");
                     TextureSaver.SaveTexture(darkColor, baseLength, baseLength, currentSavePath + "/pre_dark/" + matName + "_dark.png");
 					if (customSize)
