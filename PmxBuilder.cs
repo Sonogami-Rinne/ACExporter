@@ -155,11 +155,11 @@ internal class PmxBuilder
             }
             CreateMeshList();
 
-			//if (nowCoordinate == maxCoord)
-   //         {
-			//	//ExportGagEyes();
-			//}
-            AddAccessory();
+			if (nowCoordinate == maxCoord)
+			{
+				ExportGagEyes();
+			}
+			AddAccessory();
 			ExportLightTexture();
 			if (nowCoordinate < maxCoord)
 			{
@@ -349,7 +349,7 @@ internal class PmxBuilder
 			renders[i].enabled = false;
         }
 
-        string[] ignoredSMRs = { "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_Mask" };
+        string[] ignoredSMRs = { "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_Mask" };
 		string[] multiTexShaders = { "AC/skin_head", "AC/skin_body" };
 		string[] ignoredShaders = { "AC/hair_outline", "AC/sub/shadowcast" };
 		GameObject light = Light.FindObjectsOfType<Light>()[0].gameObject;
@@ -445,8 +445,7 @@ internal class PmxBuilder
 				}
 
                 string matName = smrMaterialsCache[GetGameObjectPath(smr.gameObject)][j];
-
-                lightDarkMaterials.Add(matName);
+				bool addFlag = true;
                 try
                 {
                     Texture mainTex = null;
@@ -590,8 +589,12 @@ internal class PmxBuilder
                         blend(lightColor, lightOverlay);
 						blend(darkColor, darkOverlay);
 					}
-                    TextureSaver.SaveTexture(lightColor, baseLength, baseLength, currentSavePath + "/pre_light/" + matName + "_light.png");
-                    TextureSaver.SaveTexture(darkColor, baseLength, baseLength, currentSavePath + "/pre_dark/" + matName + "_dark.png");
+					addFlag = checkNotTransparent(lightColor) || checkNotTransparent(darkColor);
+                    if (addFlag)
+					{
+                        TextureSaver.SaveTexture(lightColor, baseLength, baseLength, currentSavePath + "/pre_light/" + matName + "_light.png");
+                        TextureSaver.SaveTexture(darkColor, baseLength, baseLength, currentSavePath + "/pre_dark/" + matName + "_dark.png");
+                    }
 					if (customSize)
 					{
                         Texture2D.DestroyImmediate(image);
@@ -865,15 +868,31 @@ internal class PmxBuilder
                             material.SetTexture("_Under_hair_texture", null);
                         }
                     }
-					
 
-				}
+                    bool checkNotTransparent(Color32[] colors)
+                    {
+                        for (int i = 0; i < colors.Length; i++)
+                        {
+                            if (colors[i].a != 0)
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+					addFlag = false;
                 }
                 finally
                 {
+					if (addFlag)
+					{
+                        lightDarkMaterials.Add(matName);
+                    }
                     if (material != null)
                     {
                         Material.Destroy(material);
@@ -1831,8 +1850,9 @@ internal class PmxBuilder
 		string[] names = new string[]
 		{
             "cf_t_gageye_00", "cf_t_gageye_01", "cf_t_gageye_02", "cf_t_gageye_03", "cf_t_gageye_04", "cf_t_gageye_05",
-            "cf_t_gageye_06", "cf_t_gageye_07", "cf_t_gageye_08", "cf_t_gageye_09", "cf_t_gageye_10",
-            "cf_t_expression_00", "cf_t_expression_01"
+            "cf_t_gageye_06", "cf_t_gageye_06_r", "cf_t_gageye_07", "cf_t_gageye_08", "cf_t_gageye_09", "cf_t_gageye_09_r",
+			"cf_t_gageye_10", "cf_t_gageye_11", "cf_t_gageye_12", "cf_t_gageye_13", "cf_t_gageye_14", "cf_t_gageye_15",
+			"cf_t_gageye_16", "cf_t_gageye_17", "cf_t_gageye_18", "cf_t_gageye_18_r","cf_t_expression_00", "cf_t_expression_01"
         };
 		var loadedBundles = AssetBundle.GetAllLoadedAssetBundles().ToList();
 		foreach (var bundle in loadedBundles)
@@ -1844,10 +1864,9 @@ internal class PmxBuilder
 					if (names.Contains(i.name))
 					{
 						Texture2D texture = i.TryCast<Texture2D>();
-						TextureSaver.SaveTexture(texture, savePath + i.name + ".png");
+						TextureSaver.SaveTexture((Texture)texture, savePath + i.name + ".png");
 						Texture2D.Destroy(texture);
 					}
-					UnityEngine.Object.Destroy(i);
 				}
             }
 		}
