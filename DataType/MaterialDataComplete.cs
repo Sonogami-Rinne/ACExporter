@@ -28,9 +28,9 @@ internal class MaterialDataComplete
             if ((bool)smr.materials[i])
             {
                 string name = smr.materials[i].name;
-                name = PmxBuilder.CleanUpName(name);
+                name = PmxBuilder.CleanUpNameClone(name);
                 name = ((!pmxBuilder.ignoreList.Contains(name, StringComparer.Ordinal) || !pmxBuilder.ignoreList.Contains(smr.name, StringComparer.Ordinal)) ? (name + " " + PmxBuilder.GetAltInstanceID(smr.transform.parent.gameObject)) : ((!name.Contains(pmxBuilder.EyeMatName)) ? name : (name + "_" + smr.name)));
-                //name = PmxBuilder.GetAltMaterialName(pmxBuilder, name);
+                name = PmxBuilder.GetAltMaterialName(pmxBuilder, name);
                 MaterialInformation.Add(new MaterialInfo(smr.materials[i], name));
             }
         }

@@ -38,8 +38,8 @@ internal class SMRData
 			if ((bool)smr.materials[j])
 			{
 				string name = smr.materials[j].name;
-				name = PmxBuilder.CleanUpName(name);
-				name = ((!pmxBuilder.ignoreList.Contains(name, StringComparer.Ordinal) || !pmxBuilder.ignoreList.Contains(smr.name, StringComparer.Ordinal)) ? (name + " " + PmxBuilder.GetAltInstanceID(smr.transform.parent.gameObject)) : ((!name.Contains(pmxBuilder.EyeMatName)) ? name : (name + "_" + smr.name)));
+				name = PmxBuilder.CleanUpNameClone(name);
+				name = ((!pmxBuilder.ignoreList.Contains(name, StringComparer.Ordinal) || !pmxBuilder.ignoreList.Contains(smr.name, StringComparer.Ordinal)) ? (name + " " + PmxBuilder.GetAltInstanceID(smr.transform.parent.gameObject)) : name);
 				name = PmxBuilder.GetAltMaterialName(pmxBuilder, name);
 				SMRMaterialNames.Add(name);
 			}
@@ -58,8 +58,8 @@ internal class SMRData
 		for (int i = 0; i < smr.materials.Count(); i++)
 		{
 			string name = smr.materials[i].name;
-			name = PmxBuilder.CleanUpName(name);
-			name = ((pmxBuilder.ignoreList.Contains(name, StringComparer.Ordinal) && pmxBuilder.ignoreList.Contains(smr.name, StringComparer.Ordinal)) ? ((!name.Contains(pmxBuilder.EyeMatName)) ? name : (name + "_" + smr.name)) : (name + " " + PmxBuilder.GetAltInstanceID(smr.transform.parent.gameObject)));
+			name = PmxBuilder.CleanUpNameClone(name);
+			name = ((pmxBuilder.ignoreList.Contains(name, StringComparer.Ordinal) && pmxBuilder.ignoreList.Contains(smr.name, StringComparer.Ordinal)) ? name : (name + " " + PmxBuilder.GetAltInstanceID(smr.transform.parent.gameObject)));
 			name = PmxBuilder.GetAltMaterialName(pmxBuilder, name);
 			SMRMaterialNames.Add(name);
 		}

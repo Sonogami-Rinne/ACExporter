@@ -23,7 +23,9 @@ internal class PmxBuilder
 		"cf_m_eyeline_kage", "cf_m_eyeline_down", "cf_m_sirome_00", "cf_m_hitomi_00", "cf_m_tang", "cf_m_namida_00", "cf_m_gageye_00", "cf_m_gageye_01", "cf_m_gageye_02",
 		"cf_O_face_atari_M", "Highlight_cm_O_face_rend", "cm_m_body", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_shadowcaster", "o_body", "cf_O_face", "cf_O_tooth",
 		"cf_O_canine", "cf_O_mayuge", "cf_O_noseline", "cf_O_eyeline", "cf_O_eyeline_low", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S", "cf_Ohitomi_L", "cf_Ohitomi_R",
-		"cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "o_tang", "cf_O_face_atari", "o_tango", "o_nail_def01", "o_nail_foot", "cf_m_body_00", "cf_m_head_00"
+		"cf_Ohitomi_L02", "cf_Ohitomi_R02", "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "o_tang", "cf_O_face_atari", "o_tango", "o_nail_def01", "o_nail_foot", 
+		"cf_m_body_00", "cf_m_head_00", "cf_O_eyelash_up", "cf_m_eyelash_up_00", "cf_O_eyelid", "cf_m_eyelid_00", "cf_m_hitomi_00_L", "cf_m_hitomi_00_R", "cf_O_hitomi_L", "cf_O_hitomi_R",
+        "cf_m_namida", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S", "cf_m_tango"
     };
 
 	public string EyeMatName = "cf_m_hitomi_00";
@@ -38,8 +40,7 @@ internal class PmxBuilder
 		"cf_d_sk_07_00", "cf_j_sk_07_00", "cf_j_sk_07_01", "cf_j_sk_07_02", "cf_j_sk_07_03", "cf_j_sk_07_04", "cf_j_sk_07_05"
 	};
 
-    string[] ignoredShaders = { "LIF/lit_hair_overlay", "LIF/lif_main_hair_outline" };
-
+    string[] ignoredShaders = { "AC/hair_outline", "AC/sub/shadowcast" };
     public bool exportAllOutfits = false;
 
 	public bool exportWithMainCamera = false;
@@ -349,9 +350,9 @@ internal class PmxBuilder
 			renders[i].enabled = false;
         }
 
-        string[] ignoredSMRs = { "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_Mask" };
+        string[] ignoredSMRs = { "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_Mask", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S" };
 		string[] multiTexShaders = { "AC/skin_head", "AC/skin_body" };
-		string[] ignoredShaders = { "AC/hair_outline", "AC/sub/shadowcast" };
+		
 		GameObject light = Light.FindObjectsOfType<Light>()[0].gameObject;
 		Camera camera;
 		if (this.exportWithMainCamera)
@@ -2204,8 +2205,12 @@ internal class PmxBuilder
 		//return str.Replace("(Instance)", "").Replace("(Clone)", "").Trim();
 		return str.Replace("(Instance)", "").Trim();
 	}
+    public static string CleanUpNameClone(string str)
+    {
+        return str.Replace("(Instance)", "").Replace("(Clone)", "").Trim();
+    }
 
-	public static string AnimationCurveToJSON(AnimationCurve curve)
+    public static string AnimationCurveToJSON(AnimationCurve curve)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		BeginObject(stringBuilder);
