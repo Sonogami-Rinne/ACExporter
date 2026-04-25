@@ -366,10 +366,10 @@ internal class PmxBuilder
 		Camera cameraMain = Camera.main;
 		Camera auxiliaryCamera = gameObjectMeshCopier.GetComponent<Camera>();
         SkinnedMeshRenderer meshCopier = gameObjectMeshCopier.GetComponent<SkinnedMeshRenderer>();
-        UnityEngine.Quaternion lightRotation = new UnityEngine.Quaternion(-0.03940f, 0.95533f, -0.21508f, -0.19882f);
-        UnityEngine.Quaternion darkRotation = new UnityEngine.Quaternion(0.16412f, -0.02926f, 0.00487f, 0.98600f);
-        UnityEngine.Vector3 lightPosition = new UnityEngine.Vector3(0.70f, 4.46f, 2.69f);
-        UnityEngine.Vector3 darkPosition = new UnityEngine.Vector3(-0.17f, 4.40f, 2.84f);
+        UnityEngine.Quaternion lightRotation = new UnityEngine.Quaternion(-0.01447f, 0.97949f, -0.18596f, -0.07623f);
+        UnityEngine.Quaternion darkRotation = new UnityEngine.Quaternion(0.18652f, 0.00000f, 0.00000f, 0.98245f);
+        UnityEngine.Vector3 lightPosition = new UnityEngine.Vector3(1.8358783E-07f, 4.2460003f, 2.1f);
+        UnityEngine.Vector3 darkPosition = new UnityEngine.Vector3(1.8358783E-07f, 4.2460003f, 2.1f);
 		Mesh square = gameObjectMeshContainer.GetComponent<MeshFilter>().sharedMesh;
         Mesh mesh = new Mesh();
 
