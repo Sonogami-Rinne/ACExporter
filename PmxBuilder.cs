@@ -351,9 +351,13 @@ internal class PmxBuilder
         }
 
         string[] ignoredSMRs = { "cf_O_gag_eye_00", "cf_O_gag_eye_01", "cf_O_gag_eye_02", "Highlight_o_body_a_rend", "Highlight_cf_O_face_rend", "o_Mask", "cf_O_namida_L", "cf_O_namida_M", "cf_O_namida_S" };
-		string[] multiTexShaders = { "AC/skin_head", "AC/skin_body" };
-		
-		GameObject light = Light.FindObjectsOfType<Light>()[0].gameObject;
+		string[] multiTexShaders = { "AC/skin_head", "AC/skin_body"};
+		Dictionary<string, string> swappedShaders = new()
+        {
+            { "LIF/lif_main_cloth", "AC/cloth" }
+        };
+
+        GameObject light = Light.FindObjectsOfType<Light>()[0].gameObject;
 		Camera camera;
 		if (this.exportWithMainCamera)
 		{
@@ -444,6 +448,19 @@ internal class PmxBuilder
 				{
 					continue;
 				}
+				if (swappedShaders.ContainsKey(material.shader.name))
+				{
+					Shader shader = Shader.Find(swappedShaders[material.shader.name]);
+					if (shader != null)
+					{
+						Console.WriteLine("Swap shader " + material.shader.name + " to " + shader.name);
+                        material.shader = shader;
+                    }
+					else
+					{
+						Console.WriteLine("Failed to find shader: " + swappedShaders[material.shader.name]);
+                    }
+                }
 
                 string matName = smrMaterialsCache[GetGameObjectPath(smr.gameObject)][j];
 				bool addFlag = true;
@@ -476,31 +493,31 @@ internal class PmxBuilder
                     {
                         material.SetTexture("_DetailNormal", null);
                     }
-                    if (material.HasProperty("_Matcap_mask"))
-                    {
-                        material.SetTexture("_Matcap_mask", null);
-                    }
-                    if (material.HasProperty("_Mat_cap_01"))
-                    {
-                        material.SetTexture("_Mat_cap_01", null);
-                    }
-                    if (material.HasProperty("_Mat_cap_02"))
-                    {
-                        material.SetTexture("_Mat_cap_02", null);
-                    }
-                    if (material.HasProperty("_Mat_cap_03"))
-                    {
-                        material.SetTexture("_Mat_cap_03", null);
-                    }
-                    if (material.HasProperty("unity_Lightmaps"))
-                    {
-                        material.SetTexture("unity_Lightmaps", null);
-                    }
-                    if (material.HasProperty("unity_LightmapsInd"))
-                    {
-                        material.SetTexture("unity_LightmapsInd", null);
-                    }
-                    if (material.HasProperty("_Normal"))
+					if (material.HasProperty("_Matcap_mask"))
+					{
+						material.SetTexture("_Matcap_mask", null);
+					}
+					if (material.HasProperty("_Mat_cap_01"))
+					{
+						material.SetTexture("_Mat_cap_01", null);
+					}
+					if (material.HasProperty("_Mat_cap_02"))
+					{
+						material.SetTexture("_Mat_cap_02", null);
+					}
+					if (material.HasProperty("_Mat_cap_03"))
+					{
+						material.SetTexture("_Mat_cap_03", null);
+					}
+					if (material.HasProperty("unity_Lightmaps"))
+					{
+						material.SetTexture("unity_Lightmaps", null);
+					}
+					if (material.HasProperty("unity_LightmapsInd"))
+					{
+						material.SetTexture("unity_LightmapsInd", null);
+					}
+					if (material.HasProperty("_Normal"))
                     {
                         material.SetTexture("_Normal", null);
                     }
@@ -766,7 +783,7 @@ internal class PmxBuilder
                             }
 
                             // Correct triangle if its normal direction is not positive z
-                            var triangles = mesh.triangles;
+                            int[] triangles = mesh.triangles;
                             for (int tri = 0; tri < triangles.Length; tri += 3)
                             {
                                 var v0 = verts[triangles[tri]];
@@ -780,14 +797,14 @@ internal class PmxBuilder
                                     triangles[tri + 2] = tmp;
                                 }
                             }
-
+ 
                             uvIslandSolver(triangles, verts);
 
                             mesh.vertices = verts;
                             mesh.triangles = triangles;
                             mesh.RecalculateBounds();
                             mesh.RecalculateNormals();
-                            mesh.RecalculateTangents();
+							mesh.RecalculateTangents();
 
                             positionFront = new UnityEngine.Vector3(-xOffset - horizontalBlockCount / 2.0f, yOffset + verticalBlockCount / 2.0f, 10f);
                             positionLookAt = new UnityEngine.Vector3(positionFront.x, positionFront.y, 0f);
@@ -1172,7 +1189,7 @@ internal class PmxBuilder
 			{
 				continue;
 			}
-			
+
 			meshRenders.Add(componentsInChildren[i]);
             Console.WriteLine("Exporting: " + componentsInChildren[i].name);
 			SMRData sMRData = new SMRData(this, componentsInChildren[i]);
