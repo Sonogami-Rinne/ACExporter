@@ -1963,6 +1963,7 @@ internal class PmxBuilder
 		};
 
         List<BlendShapeinfo> blendShapeinfos = new();
+        Dictionary<string, int> patternNameCounter = new Dictionary<string, int>();
         ListInfoBase lib;
 
         var patterns = Human.lstCtrl.GetCategoryInfo(ChaListDefine.CategoryNo.cha_eyeset);
@@ -1975,7 +1976,17 @@ internal class PmxBuilder
         for (int j = 0; j < patterns.Count; j++)
         {
             lib = patterns[j];
-            BlendShapeinfo bld = new BlendShapeinfo(lib.Name, "Eye", j == 0);
+            string name = lib.Name;
+            if (patternNameCounter.ContainsKey(name))
+            {
+                patternNameCounter[name]++;
+                name += (" " + patternNameCounter[name]);
+            }
+            else
+            {
+                patternNameCounter.Add(name, 1);
+            }
+            BlendShapeinfo bld = new BlendShapeinfo(name, "Eye", j == 0);
             string tex = lib.GetInfo(ChaListDefine.KeyType.MainTex);
             if (tex != "0")
             {
