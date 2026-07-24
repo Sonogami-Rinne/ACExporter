@@ -19,7 +19,7 @@ Click the Export button, a folder will pop up after a few minutes. (This takes l
 
 ---
 
-Then Install the plugin for blender(([SVS branch of KKBP](https://gitgoon.dev/kkbp-dev/KKBP_Importer/src/branch/SVS_Compatible)) to import the model.pmx in the folder 
+Then Install [KKBP](https://gitgoon.dev/kkbp-dev/KKBP_Importer/src/branch/master) to import the model.pmx in the folder 
 
 <img width="347" height="377" alt="屏幕截图 2026-05-02 115018" src="https://github.com/user-attachments/assets/8577f182-a329-4a1c-8567-ce96cb122866" />
 
