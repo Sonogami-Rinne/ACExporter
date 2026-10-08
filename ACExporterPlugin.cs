@@ -43,7 +43,7 @@ namespace ACExporter
         private GUIContent _selectedCharaContent;
         private PmxBuilder _pmxBuilder;
         public static string basePath = "Export_PMX";
-        private SVSExporterMenuComponent component;
+        private ACExporterMenuComponent component;
 
         private ConfigEntry<Color> BackgroundColor { get; set; }
         private float _currentBackgroundAlpha;
@@ -76,7 +76,7 @@ namespace ACExporter
             //ShowCoordinateButtons = Config.Bind("Options", "Show coordinate change buttons in Character Maker", false, "Adds buttons to the menu that allow quickly switching between clothing sets. Same as using the clothing dropdown.\nThe buttons are always shown outside of character maker.");
             //ShowMainSub = Config.Bind("Options", "Show S/H in accessory list", true, "Show in the toggle list whether an accessory is set to Show (S) or Hide (H) in H scenes.");
 
-            component = AddComponent<SVSExporterMenuComponent>();
+            component = AddComponent<ACExporterMenuComponent>();
 
             if (!System.IO.File.Exists(basePath))
             {
@@ -84,7 +84,7 @@ namespace ACExporter
             }
         }
 
-        private sealed class SVSExporterMenuComponent : MonoBehaviour
+        private sealed class ACExporterMenuComponent : MonoBehaviour
         {
             private void Update() => Instance.Update();
             private void OnGUI() => Instance.OnGUI();

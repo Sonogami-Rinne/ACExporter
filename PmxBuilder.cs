@@ -105,6 +105,8 @@ internal class PmxBuilder
 
     private string charaName;
 
+    private List<KeyValuePair<Canvas, bool>> canvasList = new();
+
     public IEnumerator BuildStart()
 	{
 		TextureSaver.Init();
@@ -118,6 +120,7 @@ internal class PmxBuilder
 		yield return new WaitForSeconds(0.4f);
 		Prepare();
         nowCoordinate = exportAllOutfits ? 0 : human.fileStatus.coordinateType;
+        minCoord = nowCoordinate;
 		maxCoord = exportAllOutfits ? human.coorde._data.Coordinates.Length : nowCoordinate + 1;
 
         for (; nowCoordinate < maxCoord + 1; nowCoordinate++)
@@ -143,12 +146,12 @@ internal class PmxBuilder
 		{
 			ResetPmxBuilder();
 			CreateModelInfo();
-			CreateInstanceIDs();
+            ClearMorphs();
+            CreateInstanceIDs();
             SetSavePath();
             Directory.CreateDirectory(currentSavePath);
             Directory.CreateDirectory(currentSavePath + "/pre_light");
             Directory.CreateDirectory(currentSavePath + "/pre_dark");
-            ClearMorphs();
 
             if (nowCoordinate < maxCoord)
             {
@@ -191,8 +194,12 @@ internal class PmxBuilder
         gameObjectMeshCopier = new GameObject("MeshCopier");
         var smr = gameObjectMeshCopier.AddComponent<SkinnedMeshRenderer>();
 
-		GameObject.Find("Cvs_BackGround").GetComponent<Canvas>().enabled = false;
-		Camera camera;
+        foreach( var canvas in Canvas.FindObjectsOfType<Canvas>())
+        {
+            canvasList.Add(new KeyValuePair<Canvas, bool>(canvas, canvas.enabled));
+            canvas.enabled = false;
+        }
+        Camera camera;
 		GameObject light = Light.FindObjectsOfType<Light>()[0].gameObject;
 
         recoverInfos.Clear();
@@ -322,8 +329,11 @@ internal class PmxBuilder
 				camera.orthographic = false;
             }
 
-            GameObject.Find("Cvs_BackGround").GetComponent<Canvas>().enabled = true;
-
+            foreach (var canvas in canvasList)
+            {
+                canvas.Key.enabled = canvas.Value;
+            }
+            canvasList.Clear();
             recoverInfos.Clear();
 			
 
@@ -640,6 +650,7 @@ internal class PmxBuilder
                         var data = _.GetPixels32();
                         camera.targetTexture = null;
                         renderTexture.Release();
+                        RenderTexture.Destroy(renderTexture);
                         return data;
                     }
 
